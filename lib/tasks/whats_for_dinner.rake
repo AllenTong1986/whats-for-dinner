@@ -44,10 +44,12 @@ class Fridge
   def fill_fridge
     {}.tap do |fridge|
       ::CSV.foreach(fridge_csv, headers: true) do |row|
-        if fridge["#{row[0]}-#{row[3]}"]
-          fridge["#{row[0]}-#{row[3]}"][:quantity] += Integer(row[1])
-        else
-          fridge["#{row[0]}-#{row[3]}"] = {quantity: Integer(row[1]), um: row[2], expiry_date: row[3]}
+        if Date.parse(row[3]) > Date.current
+          if fridge["#{row[0]}-#{row[3]}"]
+            fridge["#{row[0]}-#{row[3]}"][:quantity] += Integer(row[1])
+          else
+            fridge["#{row[0]}-#{row[3]}"] = {quantity: Integer(row[1]), um: row[2], expiry_date: row[3]}
+          end
         end
       end
     end
