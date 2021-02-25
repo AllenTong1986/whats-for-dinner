@@ -2,11 +2,15 @@ require 'csv'
 
 task :whats_for_dinner, [:my_fridge, :my_recipes] => :environment do |_task, args|
   begin
-    recipes = Recipe.new(args[:my_recipes]).recipes
+    recipe = Recipe.new(args[:my_recipes])
     ingredients = Fridge.new(args[:my_fridge]).ingredients
 
-    puts "Dinner tonight: "
-  rescue ArgumentError
+    if recipe.recipes.present?
+      recipe.prepare(ingredients)
+    else
+      puts "Call for takeout”"
+    end
+  rescue ArgumentError, JSON::ParserError
     puts "Invalid input files."
   end
 end
@@ -19,7 +23,10 @@ class Recipe
   end
 
   def recipes
-    ActiveSupport::JSON.decode(File.read(recipes_json))
+    @recipes ||= ActiveSupport::JSON.decode(File.read(recipes_json))
+  end
+
+  def prepare(ingredients)
   end
 end
 
