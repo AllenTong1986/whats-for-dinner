@@ -19,7 +19,7 @@ class Recipe
   attr_reader :recipes_json
 
   def initialize(recipes_json)
-    @recipes_json = Rails.root.join("lib/tasks/#{recipes_json}").to_s
+    @recipes_json = Rails.root.join("lib/tasks/#{recipes_json}")
   end
 
   def recipes
@@ -40,7 +40,8 @@ class Fridge
 
   private
 
-  # Return a hash. Example: {"bread_2021-03-05" => {quantity: 2, um: "slices"}}  
+  # @return [Hash]
+  # e.g.: {"bread-05/03/2021" => {quantity: 2, um: "slices", expiry_date: "05/03/2021"}}
   def fill_fridge
     {}.tap do |fridge|
       ::CSV.foreach(fridge_csv, headers: true) do |row|
