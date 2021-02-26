@@ -5,13 +5,14 @@ task :whats_for_dinner, [:my_fridge, :my_recipes] => :environment do |_task, arg
     recipe = Recipe.new(args[:my_recipes])
     ingredients = Fridge.new(args[:my_fridge]).ingredients
 
-    if dinner = recipe.prepare(ingredients)
+    dinner = recipe.prepare(ingredients)
+    if dinner.present?
       puts dinner
     else
-      puts "Call for takeout”"
+      puts "Call for takeout"
     end
   rescue ArgumentError, JSON::ParserError
-    puts "Invalid input files."
+    puts "Invalid input files"
   end
 end
 
@@ -31,11 +32,13 @@ class Recipe
     possible_recipies =
       {}.tap do |acc|
         recipes.each do |recipe|
-          acc.merge!(check_ingredients_and_return_possible_dinner(recipe, ingredients))
+          acc.merge!(check_ingredients_and_return_possible_dinner(recipe, ingredients) || {})
         end
       end
 
-    possible_recipies.select {|k, v| v == possible_recipies.values.min }.keys.first
+    possible_recipies.select do |k, v|
+      Date.parse(v) == possible_recipies.values.map { |d| Date.parse(d) }.min
+    end.keys.first
   end
 
   private
@@ -66,10 +69,9 @@ class Recipe
   #
   def check_ingredients_and_return_possible_dinner(recipe, ingredients)
     is_possible_dinner = true
-    closest_use_by_date = Date.current.strftime("%d/%m/%Y")
+    closest_use_by_date = "10/10/3000"
 
     recipe["ingredients"].each do |recipe_ingredient|
-      closest_use_by_date = Date.current.strftime("%d/%m/%Y")
       needed_quantity = Integer(recipe_ingredient["quantity"])
 
       ingredients.select { |k, v| k.split('-')[0] == recipe_ingredient["item"] }.each do |u, x|
