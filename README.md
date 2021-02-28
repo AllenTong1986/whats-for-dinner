@@ -6,12 +6,16 @@ An rake task takes two input files(a csv file representing items and a json file
 
 Two input files like below:
 - csv file
-  e.g.: item,quantity,unit_of_measure,use_by_date
-        bread,3,slices,15/03/2021
-        bread,1,slices,28/02/2021
-        cheese,4,slices,22/08/2021
-        vegemite,3,grams,30/05/2021
+  e.g.:
+```
+  item,quantity,unit_of_measure,use_by_date
+  bread,3,slices,15/03/2021
+  bread,1,slices,28/02/2021
+  cheese,4,slices,22/08/2021
+  vegemite,3,grams,30/05/2021
+```
 - json file
+```
   [
     {
       "name": "Toasted Cheese",
@@ -28,6 +32,7 @@ Two input files like below:
       ]
     }
   ]
+```
 
 ### Running the app
 ```
